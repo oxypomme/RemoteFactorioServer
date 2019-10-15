@@ -7,21 +7,14 @@ namespace RemoteFactorioServer
 {
     class Server
     {
-        // Main Method 
-        static void Main(string[] args)
-        {
-            ExecuteServer();
-        }
-
-        public static void ExecuteServer()
+        public static void ExecuteServer(string ip = "127.0.0.1")
         {
             // Establish the local endpoint  
             // for the socket. Dns.GetHostName 
             // returns the name of the host  
             // running the application. 
-            IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddr = ipHost.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
+            IPAddress ipAddr = IPAddress.Parse(ip);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 34198);
 
             // Creation TCP/IP Socket using  
             // Socket Class Costructor 
