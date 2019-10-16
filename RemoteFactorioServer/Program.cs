@@ -21,7 +21,11 @@ namespace RemoteFactorioServer
                 string mode = Console.ReadLine();
                 Start(mode);
                 Console.WriteLine("//////////////////\n"
-                                + "Type /help to get list of commands");
+                                + "Type `help` to get list of commands");
+                while (true)
+                {
+                    string command = Console.ReadLine();
+                }
             }
         }
 
@@ -45,15 +49,15 @@ namespace RemoteFactorioServer
 
         private static void Help()
         {
-            Console.WriteLine("start [name]\n"
+            Console.WriteLine("start [<name>]\n"
                             + "     Start the Factorio Server, by default : The DUT one");
-            Console.WriteLine("stop [name]\n"
+            Console.WriteLine("stop [<name>]\n"
                             + "     Stop the Factorio Server, by default : The DUT one");
-            Console.WriteLine("restart [name]\n"
+            Console.WriteLine("restart [<name>]\n"
                             + "     Restart the Factorio Server, by default : The DUT one");
-            Console.WriteLine("activate [name]\n"
+            Console.WriteLine("activate <name>\n"
                             + "     Activate the mod with the same name");
-            Console.WriteLine("deactivate [name]\n"
+            Console.WriteLine("deactivate <name>\n"
                             + "     Deactivate the mod with the same name");
         }
     }
