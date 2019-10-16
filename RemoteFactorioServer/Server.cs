@@ -7,7 +7,7 @@ namespace RemoteFactorioServer
 {
     class Server
     {
-        public static void ExecuteServer(string ip = "127.0.0.1")
+        public void ExecuteServer(string ip = "127.0.0.1")
         {
             // Establish the local endpoint  
             // for the socket. Dns.GetHostName 
@@ -64,7 +64,7 @@ namespace RemoteFactorioServer
                     }
 
                     Console.WriteLine("Text received -> {0} ", data);
-                    byte[] message = Encoding.ASCII.GetBytes("Test Server");
+                    byte[] message = Encoding.ASCII.GetBytes("pong !");
 
                     // Send a message to Client  
                     // using Send() method 
