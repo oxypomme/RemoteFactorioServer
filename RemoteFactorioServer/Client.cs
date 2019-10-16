@@ -96,25 +96,70 @@ namespace RemoteFactorioServer
             }
         }
 
-        public string Ping()
+        public string Command_Ping()
         {
             DateTime pingStart = DateTime.Now;
             // Creation of message that we will send to Server 
-            byte[] messageSent = Encoding.ASCII.GetBytes("ping !");
+            byte[] messageSent = Encoding.ASCII.GetBytes("ping !<EOF>");
             int byteSent = sender.Send(messageSent);
 
-            while (true)
+
+            // We receive the message using the method Receive(). This method returns number of bytes received, that we'll use to convert them to string 
+            int byteRecv = sender.Receive(messageReceived);
+            var message = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+            Console.WriteLine("Message from Server -> {0}", message);
+            if (message == "pong !<EOF>")
             {
-                // We receive the message using the method Receive(). This method returns number of bytes received, that we'll use to convert them to string 
-                int byteRecv = sender.Receive(messageReceived);
-                var message = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
-                Console.WriteLine("Message from Server -> {0}", message);
-                if (message == "pong !")
-                {
-                    return DateTime.Now.Subtract(pingStart).Milliseconds.ToString();
-                }
+                return DateTime.Now.Subtract(pingStart).Milliseconds.ToString();
             }
+            return "+9999";
         }
+
+        public int Command_Start(string name)
+        {
+            byte[] messageSent = Encoding.ASCII.GetBytes("start " + name + "<EOF>");
+            int byteSent = sender.Send(messageSent);
+            
+            int byteRecv = sender.Receive(messageReceived);
+            var message = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+            Console.WriteLine("Message from Server -> {0}", message);
+            if (message == "starting<EOF>")
+            {
+                return 0;
+            }
+            return 1;
+        }
+
+        public int Command_Stop(string name)
+        {
+            byte[] messageSent = Encoding.ASCII.GetBytes("stop " + name + "<EOF>");
+            int byteSent = sender.Send(messageSent);
+
+            int byteRecv = sender.Receive(messageReceived);
+            var message = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+            Console.WriteLine("Message from Server -> {0}", message);
+            if (message == "stopping<EOF>")
+            {
+                return 0;
+            }
+            return 1;
+        }
+
+        public int Command_Restart(string name)
+        {
+            byte[] messageSent = Encoding.ASCII.GetBytes("restart " + name + "<EOF>");
+            int byteSent = sender.Send(messageSent);
+
+            int byteRecv = sender.Receive(messageReceived);
+            var message = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+            Console.WriteLine("Message from Server -> {0}", message);
+            if (message == "restating<EOF>")
+            {
+                return 0;
+            }
+            return 1;
+        }
+
         #endregion
     }
 }

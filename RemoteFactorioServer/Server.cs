@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -64,7 +65,7 @@ namespace RemoteFactorioServer
                     }
 
                     Console.WriteLine("Text received -> {0} ", data);
-                    byte[] message = Encoding.ASCII.GetBytes("pong !");
+                    byte[] message = Encoding.ASCII.GetBytes("pong !<EOF>");
 
                     // Send a message to Client  
                     // using Send() method 
@@ -82,6 +83,31 @@ namespace RemoteFactorioServer
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+            }
+        }
+
+        static public int Commands­(string message)
+        {
+            if(message.StartsWith("start"))
+            {
+                string parameter = message.Substring(5).Split("<")[0];
+                if (parameter == "DUT" || parameter == "")
+                {
+                    var proc = new Process();
+                    proc.StartInfo.FileName = @"D:\Program Files(x86)\Steam\steamapps\common\Factorio\bin\x64\servers\factorio - dut.cmd";
+                    proc.StartInfo.CreateNoWindow = false;
+                    proc.Start();
+                    proc.WaitForExit();
+                    return 0;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                return 2;
             }
         }
     }
