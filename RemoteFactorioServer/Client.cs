@@ -7,10 +7,13 @@ namespace RemoteFactorioServer
 {
     class Client
     {
+        #region Private Fields
         private Socket sender;
 
         private byte[] messageReceived = new byte[1024];
+        #endregion
 
+        #region Public Constructors 
         public Client(string ip = "127.0.0.1")
         {
             try
@@ -55,7 +58,9 @@ namespace RemoteFactorioServer
                 Console.WriteLine(e.ToString());
             }
         }
+        #endregion
 
+        #region Public Methods
         public void Stop()
         {
             try
@@ -110,5 +115,6 @@ namespace RemoteFactorioServer
                 }
             }
         }
+        #endregion
     }
 }
