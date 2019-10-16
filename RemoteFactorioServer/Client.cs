@@ -11,7 +11,7 @@ namespace RemoteFactorioServer
 
         private byte[] messageReceived = new byte[1024];
 
-        public void StartClient(string ip)
+        public Client(string ip = "127.0.0.1")
         {
             try
             {
@@ -56,7 +56,7 @@ namespace RemoteFactorioServer
             }
         }
 
-        public void StopClient()
+        public void Stop()
         {
             try
             {

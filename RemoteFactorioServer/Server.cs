@@ -7,7 +7,7 @@ namespace RemoteFactorioServer
 {
     class Server
     {
-        public void ExecuteServer(string ip = "127.0.0.1")
+        public Server(string ip = "127.0.0.1")
         {
             // Establish the local endpoint  
             // for the socket. Dns.GetHostName 

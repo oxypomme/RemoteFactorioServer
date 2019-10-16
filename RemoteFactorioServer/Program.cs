@@ -19,18 +19,16 @@ namespace RemoteFactorioServer
                     string localip = "25.42.5.80"; //"25.42.5.80" hamachi or "192.168.137.1"
                     Console.WriteLine(string.Format("Server listening on {0}", localip));
 
-                    var server = new Server();
-                    server.ExecuteServer(localip);
+                    var server = new Server(localip);
                 }
                 else if (mode == "client")
                 {
                     string targetip = "25.42.5.80";
                     Console.WriteLine(string.Format("Server listening on {0}", targetip));
 
-                    var client = new Client();
-                    client.StartClient(targetip);
+                    var client = new Client(targetip);
                     Console.WriteLine(client.Ping() + " ms");
-                    client.StopClient();
+                    client.Stop();
                 }
                 else
                 {
