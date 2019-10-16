@@ -14,7 +14,7 @@ namespace RemoteFactorioServer
         #endregion
 
         #region Public Constructors 
-        public Client(string ip = "127.0.0.1")
+        public Client(string ip)
         {
             try
             {

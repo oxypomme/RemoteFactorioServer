@@ -4,39 +4,57 @@ namespace RemoteFactorioServer
 {
     class Program
     {
-        static bool isToStop = false;
+
+        private static string ip = "192.168.137.1"; //"25.42.5.80" hamachi or "192.168.137.1"
 
         static void Main(string[] args)
         {
-            do
+            try
             {
-                isToStop = false;
+                Start(args[0]);
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.WriteLine("Argument Not Valid");
 
                 Console.WriteLine("server or client ?");
                 string mode = Console.ReadLine();
-                if (mode == "server")
-                {
-                    string localip = "25.42.5.80"; //"25.42.5.80" hamachi or "192.168.137.1"
-                    Console.WriteLine(string.Format("Server listening on {0}", localip));
+                Start(mode);
+                Console.WriteLine("//////////////////\n"
+                                + "Type /help to get list of commands");
+            }
+        }
 
-                    var server = new Server(localip);
-                }
-                else if (mode == "client")
-                {
-                    string targetip = "25.42.5.80";
-                    Console.WriteLine(string.Format("Server listening on {0}", targetip));
+        private static void Start(string mode)
+        {
+            if (mode == "server")
+            {
+                Console.WriteLine(string.Format("Server listening on {0}", ip));
 
-                    var client = new Client(targetip);
-                    Console.WriteLine(client.Ping() + " ms");
-                    client.Stop();
-                }
-                else
-                {
-                    Console.WriteLine("WHAT ?!");
-                    Console.WriteLine("=======");
-                    isToStop = true;
-                }
-            } while (isToStop);
+                var server = new Server(ip);
+            }
+            else if (mode == "client")
+            {
+                Console.WriteLine(string.Format("Client connecting to {0}", ip));
+
+                var client = new Client(ip);
+                Console.WriteLine(client.Ping() + " ms");
+                client.Stop();
+            }
+        }
+
+        private static void Help()
+        {
+            Console.WriteLine("start [name]\n"
+                            + "     Start the Factorio Server, by default : The DUT one");
+            Console.WriteLine("stop [name]\n"
+                            + "     Stop the Factorio Server, by default : The DUT one");
+            Console.WriteLine("restart [name]\n"
+                            + "     Restart the Factorio Server, by default : The DUT one");
+            Console.WriteLine("activate [name]\n"
+                            + "     Activate the mod with the same name");
+            Console.WriteLine("deactivate [name]\n"
+                            + "     Deactivate the mod with the same name");
         }
     }
 }
