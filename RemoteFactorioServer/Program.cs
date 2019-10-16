@@ -1,7 +1,5 @@
 ﻿using System;
 
-using System.Text;
-
 namespace RemoteFactorioServer
 {
     class Program
@@ -68,6 +66,11 @@ namespace RemoteFactorioServer
                         string parameter = command.Substring(7);
                         result = client.Command_Restart(parameter);
                     }
+                    else if (command.StartsWith("ping"))
+                    {
+                        Console.WriteLine(client.Command_Ping() + " ms");
+                        result = 0;
+                    }
                     else if (command == "exit")
                     {
                         break;
@@ -95,6 +98,12 @@ namespace RemoteFactorioServer
                             + "     Activate the mod with the same name");
             Console.WriteLine("deactivate <name>\n"
                             + "     Deactivate the mod with the same name");
+            Console.WriteLine("help\n"
+                            + "     List of commands");
+            Console.WriteLine("ping\n"
+                            + "     Calculate the latency between client and server");
+            Console.WriteLine("exit\n"
+                            + "     Exit the remote");
         }
 
         private static void Errors(int result)

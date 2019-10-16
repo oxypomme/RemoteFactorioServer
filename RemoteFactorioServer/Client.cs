@@ -30,7 +30,6 @@ namespace RemoteFactorioServer
                 {
                     // Connect Socket to the remote endpoint using method Connect() 
                     sender.Connect(localEndPoint);
-
                 }
 
                 // Manage of Socket's Exceptions 
