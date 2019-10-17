@@ -1,88 +1,135 @@
 ﻿using System;
 
+
+
+using System.IO;
+
+
+
 namespace RemoteFactorioServer
 {
+    // TODO : documente + commente
+    // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou meme fenetre)
+    // TODO : retire debug
+    // TODO : fichier config (users + ip + ports + etc.)
+
     class Program
     {
+        #region Private Fields
+        private static string ip = "127.0.0.1"; //"25.42.5.80" hamachi => 
 
-        private static string ip = "192.168.137.1"; //"25.42.5.80" hamachi or "192.168.137.1"
+        private static Client client { get; set; }
+        private static Server server { get; set; }
+        #endregion
 
-        private static Client client;
-
+        #region Main Function
         static void Main(string[] args)
         {
+            if (!File.Exists("users.txt"))
+            {
+                File.Create("users.txt");
+            }
+
             try
             {
                 Start(args[0]);
             }
             catch (IndexOutOfRangeException)
             {
-                Console.WriteLine("[CLIENT][ERROR] Argument Not Valid");
+                Console.WriteLine("[REMOTE] [ERROR] Argument Not Valid");
 
                 Console.WriteLine("server or client ?");
                 string mode = Console.ReadLine();
                 Start(mode);
+
+                Console.WriteLine("//////////////////\n"
+                    + "Type `help` to get list of commands");
+
+                Commands();
+
+                Console.WriteLine("Remote ended...");
             }
         }
+        #endregion
 
+        #region Private Methods
         private static void Start(string mode)
         {
             if (mode == "server")
             {
                 Console.WriteLine(string.Format("Server listening on {0}", ip));
 
-                var server = new Server(ip);
+                server = new Server(ip);
+                Server.StartServer();
             }
             else if (mode == "client")
             {
                 Console.WriteLine(string.Format("Client connecting to {0}", ip));
 
                 client = new Client(ip);
-                Console.WriteLine(client.Command_Ping() + " ms");
 
-                Console.WriteLine("//////////////////\n"
-                    + "Type `help` to get list of commands");
-                while (true)
-                {
-                    string command = Console.ReadLine();
-                    int result = 2;
-                    if (command == "help")
-                    {
-                        Help();
-                        result = 0;
-                    }
-                    else if (command.StartsWith("start"))
-                    {
-                        string parameter = command.Substring(5);
-                        result = client.Command_Start(parameter);
-                    }
-                    else if (command.StartsWith("stop"))
-                    {
-                        string parameter = command.Substring(4);
-                        result = client.Command_Stop(parameter);
-                    }
-                    else if (command.StartsWith("restart"))
-                    {
-                        string parameter = command.Substring(7);
-                        result = client.Command_Restart(parameter);
-                    }
-                    else if (command.StartsWith("ping"))
-                    {
-                        Console.WriteLine(client.Command_Ping() + " ms");
-                        result = 0;
-                    }
-                    else if (command == "exit")
-                    {
-                        break;
-                    }
-                    Errors(result);
-                }
-                Console.WriteLine("Remote ended...");
-                client.Stop();
+                LogIn();
+
+                Console.WriteLine(client.Command_Ping() + " ms");
             }
             else
             {
                 Errors(-1);
+            }
+        }
+
+        private static void Commands()
+        {
+            while (true)
+            {
+                string command = Console.ReadLine();
+                int result = 2;
+                if (command == "help")
+                {
+                    Help();
+                    result = 0;
+                }
+                else if (command.StartsWith("start"))
+                {
+                    string parameter = command.Substring(5);
+                    result = client.Command_Start(parameter);
+                }
+                else if (command.StartsWith("stop"))
+                {
+                    string parameter = command.Substring(4);
+                    result = client.Command_Stop(parameter);
+                }
+                else if (command.StartsWith("restart"))
+                {
+                    string parameter = command.Substring(7);
+                    result = client.Command_Restart(parameter);
+                }
+                else if (command.StartsWith("ping"))
+                {
+                    Console.WriteLine(client.Command_Ping() + " ms");
+                    result = 0;
+                }
+                else if (command == "exit")
+                {
+                    result = client.Command_Exit();
+                    break;
+                }
+                Errors(result);
+            }
+        }
+
+        private static void LogIn()
+        {
+            Console.WriteLine("Username : ");
+            string username = Console.ReadLine().ToString();
+            Console.WriteLine("Password : ");
+            string password = Console.ReadLine();
+
+            if (client.LogIn(username, password) != 0)
+            {
+                Console.WriteLine("Wrong credentials !");
+                client.Command_Exit();
+                return;
             }
         }
 
@@ -108,23 +155,31 @@ namespace RemoteFactorioServer
 
         private static void Errors(int result)
         {
-            if (result != 0)
+
+            string errorMessage;
+            switch (result)
             {
-                string errorMessage;
-                switch (result)
-                {
-                    case 1:
-                        errorMessage = "[REMOTE] [ERROR] Unknown Argument";
-                        break;
-                    case 2:
-                        errorMessage = "[REMOTE] [ERROR] Unknown Command";
-                        break;
-                    default:
-                        errorMessage = "[REMOTE] [ERROR] Unexpected Error";
-                        break;
-                }
-                Console.WriteLine(errorMessage);
+                case 0:
+                    errorMessage = "[REMOTE] [INFO] Command executed successfully";
+                    break;
+                case 1:
+                    errorMessage = "[REMOTE] [ERROR] Unknown Argument";
+                    break;
+                case 2:
+                    errorMessage = "[REMOTE] [ERROR] Unknown Command";
+                    break;
+                case 3:
+                    errorMessage = "[REMOTE] [FATAL] Disconnected from server";
+                    Console.WriteLine(errorMessage);
+                    _ = client.Command_Exit();
+                    break;
+                default:
+                    errorMessage = "[REMOTE] [ERROR] Unexpected Error";
+                    break;
             }
+            Console.WriteLine(errorMessage);
+
         }
+        #endregion
     }
 }

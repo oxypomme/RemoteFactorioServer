@@ -3,20 +3,21 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
+
+
+
 namespace RemoteFactorioServer
 {
     class Client
     {
         #region Private Fields
         private Socket sender;
-
-        private byte[] messageReceived = new byte[1024];
         #endregion
 
         #region Public Constructors 
         public Client(string ip)
         {
-            try
+            while (true)
             {
                 // Establish the remote endpoint for the socket. Uses port 34198 (factorio+1) on the computer. 
                 IPAddress ipAddr = IPAddress.Parse(ip);
@@ -30,82 +31,73 @@ namespace RemoteFactorioServer
                 {
                     // Connect Socket to the remote endpoint using method Connect() 
                     sender.Connect(localEndPoint);
+                    break;
                 }
-
-                // Manage of Socket's Exceptions 
-                catch (ArgumentNullException ane)
+                catch (SocketException)
                 {
-
-                    Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
+                    // If can't connect
+                    continue;
                 }
-
-                catch (SocketException se)
-                {
-
-                    Console.WriteLine("SocketException : {0}", se.ToString());
-                }
-
-                catch (Exception e)
-                {
-                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
-                }
-            }
-
-            catch (Exception e)
-            {
-
-                Console.WriteLine(e.ToString());
             }
         }
         #endregion
 
+        #region Private Methods
+        private void SendData(string message)
+        {
+            byte[] messageSent = Encoding.ASCII.GetBytes(message);
+            int byteSent = sender.Send(messageSent);
+        }
+
+        private string GetData()
+        {
+            byte[] messageReceived = new byte[1024];
+            int byteRecv = sender.Receive(messageReceived);
+            return Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+        }
+        #endregion
+
         #region Public Methods
+        public int LogIn(string user, string passwd)
+        {
+            SendData(user + "<EOF>");
+            var message = GetData();
+            if (message.Contains("ok"))
+            {
+                SendData(passwd + "<EOF>");
+                message = GetData();
+                if (message.Contains("ok"))
+                {
+                    return 0;
+                }
+                return 1;
+            }
+            return 1;
+        }
+
         public void Stop()
         {
-            try
-            {
-                try
-                {
-                    // Close Socket using the method Close() 
-                    sender.Shutdown(SocketShutdown.Both);
-                    sender.Close();
-                }
-                // Manage of Socket's Exceptions 
-                catch (ArgumentNullException ane)
-                {
-
-                    Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
-                }
-
-                catch (SocketException se)
-                {
-
-                    Console.WriteLine("SocketException : {0}", se.ToString());
-                }
-
-                catch (Exception e)
-                {
-                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
-                }
-            }
-            catch (Exception e)
-            {
-
-                Console.WriteLine(e.ToString());
-            }
+            // Close Socket using the method Close() 
+            sender.Shutdown(SocketShutdown.Both);
+            sender.Close();
         }
 
         public string Command_Ping()
         {
             DateTime pingStart = DateTime.Now;
             // Creation of message that we will send to Server 
-            byte[] messageSent = Encoding.ASCII.GetBytes("ping !<EOF>");
-            int byteSent = sender.Send(messageSent);
+            try
+            {
+                SendData("ping !<EOF>");
+            }
+            catch (SocketException)
+            {
+                return "-1";
+            }
 
 
             // We receive the message using the method Receive(). This method returns number of bytes received, that we'll use to convert them to string 
-            int byteRecv = sender.Receive(messageReceived);
-            var message = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+            var message = GetData();
             Console.WriteLine("Message from Server -> {0}", message);
             if (message == "pong !<EOF>")
             {
@@ -116,13 +108,20 @@ namespace RemoteFactorioServer
 
         public int Command_Start(string name)
         {
-            byte[] messageSent = Encoding.ASCII.GetBytes("start " + name + "<EOF>");
-            int byteSent = sender.Send(messageSent);
-            
-            int byteRecv = sender.Receive(messageReceived);
-            var message = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+            try
+            {
+                SendData("start " + name + "<EOF>");
+
+                Console.WriteLine("Message from Client <- {0}", "start " + name + "<EOF>");
+            }
+            catch (SocketException)
+            {
+                return 3;
+            }
+
+            var message = GetData();
             Console.WriteLine("Message from Server -> {0}", message);
-            if (message == "starting<EOF>")
+            if (message == "0<EOF>")
             {
                 return 0;
             }
@@ -131,13 +130,20 @@ namespace RemoteFactorioServer
 
         public int Command_Stop(string name)
         {
-            byte[] messageSent = Encoding.ASCII.GetBytes("stop " + name + "<EOF>");
-            int byteSent = sender.Send(messageSent);
+            try
+            {
+                SendData("stop " + name + "<EOF>");
 
-            int byteRecv = sender.Receive(messageReceived);
-            var message = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+                Console.WriteLine("Message from Client <- {0}", "stop " + name + "<EOF>");
+            }
+            catch (SocketException)
+            {
+                return 3;
+            }
+
+            var message = GetData();
             Console.WriteLine("Message from Server -> {0}", message);
-            if (message == "stopping<EOF>")
+            if (message == "0<EOF>")
             {
                 return 0;
             }
@@ -146,19 +152,40 @@ namespace RemoteFactorioServer
 
         public int Command_Restart(string name)
         {
-            byte[] messageSent = Encoding.ASCII.GetBytes("restart " + name + "<EOF>");
-            int byteSent = sender.Send(messageSent);
+            try
+            {
+                SendData("restart " + name + "<EOF>");
 
-            int byteRecv = sender.Receive(messageReceived);
-            var message = Encoding.ASCII.GetString(messageReceived, 0, byteRecv);
+                Console.WriteLine("Message from Client <- {0}", "restart " + name + "<EOF>");
+            }
+            catch (SocketException)
+            {
+                return 3;
+            }
+
+            var message = GetData();
             Console.WriteLine("Message from Server -> {0}", message);
-            if (message == "restating<EOF>")
+            if (message == "0<EOF>")
             {
                 return 0;
             }
             return 1;
         }
 
+        public int Command_Exit()
+        {
+            try
+            {
+                SendData("dc<EOF>");
+            }
+            catch (SocketException)
+            {
+                return 3;
+            }
+            Console.WriteLine("Message from Client <- {0}", "dc<EOF>");
+            Stop();
+            return 0;
+        }
         #endregion
     }
 }
