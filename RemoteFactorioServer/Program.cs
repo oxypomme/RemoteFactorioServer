@@ -36,19 +36,20 @@ namespace RemoteFactorioServer
             }
             catch (IndexOutOfRangeException)
             {
-                Console.WriteLine("[REMOTE] [ERROR] Argument Not Valid");
+                Console.WriteLine("[REMOTE] [ERROR] Argument Not Valid, starting client");
+                //Start("client");
 
-                Console.WriteLine("server or client ?");
-                string mode = Console.ReadLine();
-                Start(mode);
+                Console.WriteLine("server or client ?"); //DEBUG
+                string mode = Console.ReadLine(); //DEBUG
+                Start(mode); //DEBUG
+            }
 
-                Console.WriteLine("//////////////////\n"
+            Console.WriteLine("//////////////////\n"
                     + "Type `help` to get list of commands");
 
-                Commands();
+            Commands();
 
-                Console.WriteLine("Remote ended...");
-            }
+            Console.WriteLine("[REMOTE] [INFO] Remote ended...");
         }
         #endregion
 
