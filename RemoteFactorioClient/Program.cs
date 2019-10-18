@@ -8,7 +8,6 @@ using System.IO;
 
 namespace RemoteFactorioServer
 {
-    // TODO : séparer clients et console en 2 exe
     // TODO : documente + commente
     // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou même fenêtre)
     // TODO : retire debug
@@ -20,31 +19,22 @@ namespace RemoteFactorioServer
         private static string ip = "127.0.0.1"; //"25.42.5.80" hamachi => 
 
         private static Client client { get; set; }
-        private static Server server { get; set; }
         #endregion
 
         #region Main Function
         static void Main(string[] args)
         {
-            if (!File.Exists("users.txt"))
-            {
-                File.Create("users.txt");
-            }
-
             try
             {
-                Start(args[0]);
+                Start();
             }
             catch (IndexOutOfRangeException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("[ERROR] Argument Not Valid, starting client");
                 Console.ResetColor();
-                //Start("client");
 
-                Console.WriteLine("server or client ?"); //DEBUG
-                string mode = Console.ReadLine(); //DEBUG
-                Start(mode); //DEBUG
+                Start();
             }
 
             Console.WriteLine("Press ENTER to exit...");
@@ -54,42 +44,33 @@ namespace RemoteFactorioServer
         #endregion
 
         #region Private Methods
-        private static void Start(string mode)
+        private static void Start()
         {
-            if (mode == "server")
-            {
-                Console.WriteLine(string.Format("Server listening on {0}", ip));
 
-                server = new Server(ip);
-                Server.StartServer();
+            Console.WriteLine(string.Format("Client connecting to {0}", ip));
+
+            client = new Client(ip);
+
+            if (LogIn() == 1)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("[FATAL] Wrong credentials !");
+                Console.ResetColor();
+                client.Stop();
             }
             else
             {
-                Console.WriteLine(string.Format("Client connecting to {0}", ip));
 
-                client = new Client(ip);
+                Console.WriteLine(client.Command_Ping() + " ms");
 
-                if (LogIn() == 1)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.WriteLine("[FATAL] Wrong credentials !");
-                    Console.ResetColor();
-                    client.Stop();
-                }
-                else
-                {
+                Console.WriteLine("//////////////////\n"
+                    + "Type `help` to get list of commands");
 
-                    Console.WriteLine(client.Command_Ping() + " ms");
+                Commands();
 
-                    Console.WriteLine("//////////////////\n"
-                        + "Type `help` to get list of commands");
-
-                    Commands();
-
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("[INFO] Remote ended...");
-                    Console.ResetColor();
-                }
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("[INFO] Remote ended...");
+                Console.ResetColor();
             }
         }
 

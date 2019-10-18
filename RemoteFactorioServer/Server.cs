@@ -10,6 +10,11 @@ namespace RemoteFactorioServer
 {
     class Server
     {
+        // TODO : documente + commente
+        // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou même fenêtre)
+        // TODO : retire debug
+        // TODO : fichier config (users + ip + ports + etc.)
+
         #region Private Fields
         private static Process proc = new Process();
         // Establish the local endpoint for the socket. Dns.GetHostName the name of the host running the application. 
@@ -21,10 +26,13 @@ namespace RemoteFactorioServer
         private static Socket listener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         #endregion
 
-        #region Public Constructors
-        public Server(string ip)
+        #region Main Function
+        static void Main(string[] args)
         {
-            serverIP = ip;
+            if (!File.Exists("users.txt"))
+            {
+                File.Create("users.txt");
+            }
 
             // Using Bind() method we associate a network address to the Server Socket. All client that will connect to this Server Socket must know this network Address 
             listener.Bind(localEndPoint);
@@ -32,7 +40,8 @@ namespace RemoteFactorioServer
             // Using Listen() method we create the Client list that will want to connect to Server 
             listener.Listen(10);
 
-            
+            Console.WriteLine(string.Format("Server listening on {0}", serverIP));
+            StartServer();
         }
         #endregion
 
