@@ -59,7 +59,7 @@ namespace RemoteFactorioServer
                 server = new Server(ip);
                 Server.StartServer();
             }
-            else if (mode == "client")
+            else
             {
                 Console.WriteLine(string.Format("Client connecting to {0}", ip));
 
