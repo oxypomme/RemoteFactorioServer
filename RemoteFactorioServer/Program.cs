@@ -65,18 +65,27 @@ namespace RemoteFactorioServer
 
                 client = new Client(ip);
 
-                LogIn();
+                if (LogIn() == 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("[FATAL] Wrong credentials !");
+                    Console.ResetColor();
+                    client.Stop();
+                }
+                else
+                {
 
-                Console.WriteLine(client.Command_Ping() + " ms");
+                    Console.WriteLine(client.Command_Ping() + " ms");
 
-                Console.WriteLine("//////////////////\n"
-                    + "Type `help` to get list of commands");
+                    Console.WriteLine("//////////////////\n"
+                        + "Type `help` to get list of commands");
 
-                Commands();
+                    Commands();
 
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("[INFO] Remote ended...");
-                Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("[INFO] Remote ended...");
+                    Console.ResetColor();
+                }
             }
         }
 
@@ -125,7 +134,7 @@ namespace RemoteFactorioServer
             }
         }
 
-        private static void LogIn()
+        private static int LogIn()
         {
             Console.WriteLine("Username : ");
             string username = Console.ReadLine().ToString();
@@ -134,12 +143,9 @@ namespace RemoteFactorioServer
 
             if (client.LogIn(username, password) != 0)
             {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine("[FATAL] Wrong credentials !");
-                Console.ResetColor();
-                client.Command_Exit();
-                return;
+                return 1;
             }
+            return 0;
         }
 
         private static void Help()
