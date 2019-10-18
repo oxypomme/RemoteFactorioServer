@@ -37,7 +37,9 @@ namespace RemoteFactorioServer
             }
             catch (IndexOutOfRangeException)
             {
-                Console.WriteLine("[REMOTE] [ERROR] Argument Not Valid, starting client");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[ERROR] Argument Not Valid, starting client");
+                Console.ResetColor();
                 //Start("client");
 
                 Console.WriteLine("server or client ?"); //DEBUG
@@ -50,7 +52,9 @@ namespace RemoteFactorioServer
 
             Commands();
 
-            Console.WriteLine("[REMOTE] [INFO] Remote ended...");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("[INFO] Remote ended...");
+            Console.ResetColor();
         }
         #endregion
 
@@ -116,6 +120,11 @@ namespace RemoteFactorioServer
                     result = client.Command_Exit();
                     break;
                 }
+                else if (command == "clear")
+                {
+                    Console.Clear();
+                    result = 0;
+                }
                 Errors(result);
             }
         }
@@ -129,7 +138,9 @@ namespace RemoteFactorioServer
 
             if (client.LogIn(username, password) != 0)
             {
-                Console.WriteLine("Wrong credentials !");
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("[FATAL] Wrong credentials !");
+                Console.ResetColor();
                 client.Command_Exit();
                 return;
             }
@@ -152,34 +163,44 @@ namespace RemoteFactorioServer
             Console.WriteLine("ping\n"
                             + "     Calculate the latency between client and server");
             Console.WriteLine("exit\n"
-                            + "     Exit the remote");
+                            + "     Exit the client");
+            Console.WriteLine("clear\n"
+                            + "     Clears the console");
         }
 
         private static void Errors(int result)
         {
-
+            ConsoleColor color = ConsoleColor.White;
             string errorMessage;
             switch (result)
             {
                 case 0:
-                    errorMessage = "[REMOTE] [INFO] Command executed successfully";
+                    errorMessage = "[INFO] Command executed successfully";
+                    color = ConsoleColor.Yellow;
                     break;
                 case 1:
-                    errorMessage = "[REMOTE] [ERROR] Unknown Argument";
+                    errorMessage = "[ERROR] Unknown Argument";
+                    color = ConsoleColor.Red;
                     break;
                 case 2:
-                    errorMessage = "[REMOTE] [ERROR] Unknown Command";
+                    errorMessage = "[ERROR] Unknown Command";
+                    color = ConsoleColor.Red;
                     break;
                 case 3:
-                    errorMessage = "[REMOTE] [FATAL] Disconnected from server";
+                    errorMessage = "[FATAL] Disconnected from server";
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.WriteLine(errorMessage);
+                    Console.ResetColor();
                     _ = client.Command_Exit();
                     break;
                 default:
-                    errorMessage = "[REMOTE] [ERROR] Unexpected Error";
+                    errorMessage = "[ERROR] Unexpected Error";
+                    color = ConsoleColor.Red;
                     break;
             }
+            Console.ForegroundColor = color;
             Console.WriteLine(errorMessage);
+            Console.ResetColor();
 
         }
         #endregion
