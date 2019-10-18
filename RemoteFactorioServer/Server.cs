@@ -17,7 +17,7 @@ namespace RemoteFactorioServer
         private static readonly IPAddress ipAddr = IPAddress.Parse(serverIP);
         private static readonly IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 34198);
 
-        // Creation TCP/IP Socket using Socket Class Costructor 
+        // Creation TCP/IP Socket using Socket Class Constructor 
         private static Socket listener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         #endregion
 
@@ -56,7 +56,10 @@ namespace RemoteFactorioServer
                         if (LogIn(clientSocket) == 1)
                         {
                             clientSocket.Send(Encoding.ASCII.GetBytes("wrong<EOF>"));
-                            break;
+                        }
+                        else
+                        {
+                            isLogged = true;
                         }
                     }
                     catch (SocketException) { break; }
@@ -64,10 +67,10 @@ namespace RemoteFactorioServer
 
                 try
                 {
-                    while (true)
+                    while (isLogged)
                     {
                         // Each command
-
+                        
                         string data = GetData(clientSocket);
 
                         Console.WriteLine("Message received -> {0} ", data);
@@ -96,6 +99,7 @@ namespace RemoteFactorioServer
                         try { clientSocket.Send(message); }
                         catch (SocketException) { break; }
                     }
+                    isLogged = false;
                 }
                 catch (SocketException) { continue; }
             }
