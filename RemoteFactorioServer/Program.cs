@@ -46,6 +46,10 @@ namespace RemoteFactorioServer
                 string mode = Console.ReadLine(); //DEBUG
                 Start(mode); //DEBUG
             }
+
+            Console.WriteLine("Press ENTER to exit...");
+            _ = Console.ReadLine();
+
         }
         #endregion
 
