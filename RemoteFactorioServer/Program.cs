@@ -46,15 +46,6 @@ namespace RemoteFactorioServer
                 string mode = Console.ReadLine(); //DEBUG
                 Start(mode); //DEBUG
             }
-
-            Console.WriteLine("//////////////////\n"
-                    + "Type `help` to get list of commands");
-
-            Commands();
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("[INFO] Remote ended...");
-            Console.ResetColor();
         }
         #endregion
 
@@ -77,10 +68,19 @@ namespace RemoteFactorioServer
                 LogIn();
 
                 Console.WriteLine(client.Command_Ping() + " ms");
+
+                Console.WriteLine("//////////////////\n"
+                    + "Type `help` to get list of commands");
+
+                Commands();
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("[INFO] Remote ended...");
+                Console.ResetColor();
             }
             else
             {
-                Errors(-1);
+                Errors(2);
             }
         }
 
