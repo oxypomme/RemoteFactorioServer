@@ -13,9 +13,9 @@ namespace RemoteFactorioServer
         #region Private Fields
         private static Process proc = new Process();
         // Establish the local endpoint for the socket. Dns.GetHostName the name of the host running the application. 
-        private static string ServerIP { get; set; }
-        private static IPAddress ipAddr = IPAddress.Parse(ServerIP);
-        private static IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 34198);
+        private static string serverIP = "127.0.0.1";
+        private static readonly IPAddress ipAddr = IPAddress.Parse(serverIP);
+        private static readonly IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 34198);
 
         // Creation TCP/IP Socket using Socket Class Costructor 
         private static Socket listener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -24,7 +24,7 @@ namespace RemoteFactorioServer
         #region Public Constructors
         public Server(string ip)
         {
-            ServerIP = ip;
+            serverIP = ip;
 
             // Using Bind() method we associate a network address to the Server Socket. All client that will connect to this Server Socket must know this network Address 
             listener.Bind(localEndPoint);
