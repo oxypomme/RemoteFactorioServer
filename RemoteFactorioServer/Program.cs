@@ -78,10 +78,6 @@ namespace RemoteFactorioServer
                 Console.WriteLine("[INFO] Remote ended...");
                 Console.ResetColor();
             }
-            else
-            {
-                Errors(2);
-            }
         }
 
         private static void Commands()
