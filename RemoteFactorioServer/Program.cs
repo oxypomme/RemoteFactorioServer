@@ -8,8 +8,9 @@ using System.IO;
 
 namespace RemoteFactorioServer
 {
+    // TODO : séparer clients et console en 2 exe
     // TODO : documente + commente
-    // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou meme fenetre)
+    // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou même fenêtre)
     // TODO : retire debug
     // TODO : fichier config (users + ip + ports + etc.)
 
