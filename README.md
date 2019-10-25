@@ -17,7 +17,7 @@
 
 One to two paragraph statement about your product and what it does.
 
-<img src="https://rawcdn.githack.com/oxypomme/DofLog/148f76df2c41563abd80346559aab6575423e064/DofLog/src/icon.png" alt="drawing" width="124"/>
+<img src="https://rawcdn.githack.com/oxypomme/RemoteFactorioServer/3f5a4eb8fd8e5a32ff0d031a55b645177eff0f39/res/icon.ico" alt="drawing" width="124"/>
 
 ## Installation
 
