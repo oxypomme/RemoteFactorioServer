@@ -1,9 +1,14 @@
-# Product Name
-> Short blurb about what your product does.
+# Remote Factorio Server - RFS
 
-- [Product Name](#product-name)
+[![forthebadge](https://forthebadge.com/images/badges/for-you.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/made-with-c-sharp.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+
+> RFS est un programme permettant de contrôler depuis un ordinateur distant un serveur Factorio.
+
+- [Remote Factorio Server - RFS](#remote-factorio-server---rfs)
   - [Installation](#installation)
-  - [Usage example](#usage-example)
+  - [Exemples d'utilisations](#exemples-dutilisations)
   - [Development setup](#development-setup)
   - [Release History](#release-history)
   - [Meta](#meta)
@@ -11,27 +16,27 @@
 
 One to two paragraph statement about your product and what it does.
 
-![](header.png)
+![header](header.png)
 
 ## Installation
 
 OS X & Linux:
 
 ```sh
-npm install my-crazy-module --save
+Non supporté
 ```
 
 Windows:
 
 ```sh
-edit autoexec.bat
+Comming soon
 ```
 
-## Usage example
+## Exemples d'utilisations
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
+**IMAGINEZ** vous êtes en déplacement, et les joueurs du serveur Factorio (que vous hébergez chez vous) veulent jouer mais le serveur n'est pas démarré... Que cela ne tienne ! Grace à RFS vous pouvez démarrer votre serveur à distance !
 
-_For more examples and usage, please refer to the [Wiki][wiki]._
+*Pour plus d'exemples, référez vous au [Wiki](https://github.com/oxypomme/RemoteFactorioServer/wiki).*
 
 ## Development setup
 
@@ -44,18 +49,9 @@ npm test
 
 ## Release History
 
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
+- 0.0.1
+  - Nécessite un nom d'utilisateur + mot de passe pour se connecter.
+  - Peut démarrer à distance
 
 ## Meta
 
