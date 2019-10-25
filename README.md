@@ -6,6 +6,8 @@
 
 > RFS est un programme permettant de contrôler depuis un ordinateur distant un serveur Factorio.
 
+<img src="https://rawcdn.githack.com/oxypomme/RemoteFactorioServer/3f5a4eb8fd8e5a32ff0d031a55b645177eff0f39/res/icon.ico" alt="drawing" width="124"/>
+
 - [Remote Factorio Server - RFS](#remote-factorio-server---rfs)
   - [Installation](#installation)
   - [Exemples d'utilisations](#exemples-dutilisations)
@@ -14,10 +16,6 @@
   - [Auteur](#auteur)
   - [Licence](#licence)
   - [Contributing](#contributing)
-
-One to two paragraph statement about your product and what it does.
-
-<img src="https://rawcdn.githack.com/oxypomme/RemoteFactorioServer/3f5a4eb8fd8e5a32ff0d031a55b645177eff0f39/res/icon.ico" alt="drawing" width="124"/>
 
 ## Installation
 
