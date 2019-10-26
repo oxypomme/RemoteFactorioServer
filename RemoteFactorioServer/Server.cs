@@ -5,8 +5,7 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
-using IniParser;
-using IniParser.Model;
+using Newtonsoft.Json;
 
 namespace RemoteFactorioServer
 {
@@ -24,8 +23,7 @@ namespace RemoteFactorioServer
         static string serverIP;
         static int serverPort;
 
-        static FileIniDataParser parser = new FileIniDataParser();
-        static IniData config = new IniData();
+        static Config config = new Config();
 
         // Creation TCP/IP Socket using Socket Class Constructor 
         static Socket listener;
@@ -34,20 +32,14 @@ namespace RemoteFactorioServer
         #region Main Function
         static void Main(string[] args)
         {
-            if (!File.Exists("config.ini"))
+            using (StreamReader file = new StreamReader("config.json"))
             {
-                File.Create("config.ini");
-            }
-            else
-            {
-                config = parser.ReadFile("config.ini");
+                config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
+                file.Close();
             }
 
-            serverIP = config["GENERAL"]["ip"];
-            serverPort = int.Parse(config["GENERAL"]["port"]);
-
-            IPAddress ipAddr = IPAddress.Parse(serverIP);
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, serverPort);
+            IPAddress ipAddr = IPAddress.Parse(config.RemoteIp);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, config.RemotePort);
 
             listener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -57,7 +49,7 @@ namespace RemoteFactorioServer
             // Using Listen() method we create the Client list that will want to connect to Server 
             listener.Listen(10);
 
-            Console.WriteLine(string.Format("Server listening on {0}", serverIP));
+            Console.WriteLine(string.Format("Server listening on {0}", config.RemoteIp));
             StartServer();
         }
         #endregion
@@ -69,8 +61,6 @@ namespace RemoteFactorioServer
             {
                 // Each new client
                 Console.WriteLine("Waiting connection ... ");
-
-                Console.WriteLine(config["USERS"]);
 
                 // Suspend while waiting for incoming connection Using Accept() method the server will accept connection of client 
                 Socket clientSocket = listener.Accept();
@@ -152,27 +142,12 @@ namespace RemoteFactorioServer
 
         static int LogIn(Socket clientSocket)
         {
-            List<string> usernames = new List<string>();
-            List<string> passwords = new List<string>();
-
-            using (StreamReader file = new StreamReader("users.txt"))
-            {
-                string ln;
-
-                while ((ln = file.ReadLine()) != null)
-                {
-                    usernames.Add(ln.Split('-')[0]);
-                    passwords.Add(ln.Split('-')[1]);
-                }
-                file.Close();
-            }
-
             string data = GetData(clientSocket);
-            if (usernames.Contains(data.Split('<')[0]))
+            if (config.Usernames.Contains(data.Split('<')[0]))
             {
                 clientSocket.Send(Encoding.ASCII.GetBytes("ok<EOF>"));
                 data = GetData(clientSocket);
-                if (passwords.Contains(data.Split('<')[0]))
+                if (config.Passwords.Contains(data.Split('<')[0]))
                 {
                     clientSocket.Send(Encoding.ASCII.GetBytes("ok<EOF>"));
                     return 0;
