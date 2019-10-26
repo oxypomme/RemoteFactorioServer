@@ -1,8 +1,7 @@
 # Remote Factorio Server - RFS
 
-[![forthebadge](https://forthebadge.com/images/badges/for-you.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/made-with-c-sharp.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+[![version](https://img.shields.io/github/v/release/oxypomme/DofLog?label=Version&style=for-the-badge)](https://shields.io)
+<a href="https://forthebadge.com/"><img src="https://forthebadge.com/images/badges/made-with-c-sharp.svg" alt="forthebadge" height="28"/></a>
 
 > RFS est un programme permettant de contrôler depuis un ordinateur distant un serveur Factorio.
 
@@ -14,8 +13,8 @@
   - [Development setup](#development-setup)
   - [Release History](#release-history)
   - [Auteur](#auteur)
-  - [Licence](#licence)
   - [Contributing](#contributing)
+  - [Remerciements](#remerciements)
 
 ## Installation
 
@@ -55,13 +54,13 @@ npm test
 
 ## Auteur
 
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+
 - [**OxyTom**](https://github.com/oxypomme) - [@OxyTom](https://twitter.com/OxyT0m8)
 
 Lisez la liste des [contributeurs](https://github.com/oxypomme/RemoteFactorioServer/contributors) qui ont participé à ce projet.
 
-## Licence
-
-[MIT Licence](https://github.com/oxypomme/RemoteFactorioServer/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/oxypomme/DofLog?style=for-the-badge)](https://github.com/oxypomme/DofLog/blob/master/LICENSE)
 
 ## Contributing
 
@@ -70,3 +69,7 @@ Lisez la liste des [contributeurs](https://github.com/oxypomme/RemoteFactorioSer
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
+
+## Remerciements
+
+- [shields.io](https://shields.io) and [ForTheBadge](https://forthebadge.com) for those quality badges.
