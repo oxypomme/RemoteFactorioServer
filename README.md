@@ -1,6 +1,6 @@
 # Remote Factorio Server - RFS
 
-[![version](https://img.shields.io/github/v/release/oxypomme/DofLog?label=Version&style=for-the-badge)](https://shields.io)
+[![version](https://img.shields.io/github/v/release/oxypomme/RemoteFactorioServer?label=Version&style=for-the-badge)](https://shields.io)
 <a href="https://forthebadge.com/"><img src="https://forthebadge.com/images/badges/made-with-c-sharp.svg" alt="forthebadge" height="28"/></a>
 
 > RFS est un programme permettant de contrôler depuis un ordinateur distant un serveur Factorio.
