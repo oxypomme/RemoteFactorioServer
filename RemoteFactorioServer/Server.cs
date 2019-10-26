@@ -15,13 +15,10 @@ namespace RemoteFactorioServer
         // TODO : documente + commente
         // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou même fenêtre)
         // TODO : retire debug
-        // TODO : fichier config (users + ip + ports + etc.)
+        // TODO : gestion erreurs
 
         #region Private Fields
-        static Process proc = new Process();
-        // Establish the local endpoint for the socket. Dns.GetHostName the name of the host running the application. 
-        static string serverIP;
-        static int serverPort;
+        static Process proc = new Process(); 
 
         static Config config = new Config();
 
@@ -32,25 +29,48 @@ namespace RemoteFactorioServer
         #region Main Function
         static void Main(string[] args)
         {
-            using (StreamReader file = new StreamReader("config.json"))
+            if (!File.Exists("config.json"))
             {
-                config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
-                file.Close();
+                Console.WriteLine("[ERROR] No config.json file found !");
+                Console.WriteLine("[INFO] File created...");
+                Console.WriteLine("[FATAL] Config.json is empty !");
+                File.Create("config.json");
+                Console.WriteLine("Press ENTER to exit...");
+                _ = Console.ReadLine();
+                return;
+            }
+            else
+            {
+                using (StreamReader file = new StreamReader("config.json"))
+                {
+                    config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
+                    file.Close();
+                }
             }
 
-            IPAddress ipAddr = IPAddress.Parse(config.RemoteIp);
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, config.RemotePort);
-
-            listener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-            // Using Bind() method we associate a network address to the Server Socket. All client that will connect to this Server Socket must know this network Address 
-            listener.Bind(localEndPoint);
+            try { 
+                IPAddress ipAddr = IPAddress.Parse(config.RemoteIp);
+                IPEndPoint localEndPoint = new IPEndPoint(ipAddr, config.RemotePort);
+                listener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                // Using Bind() method we associate a network address to the Server Socket. All client that will connect to this Server Socket must know this network Address 
+                listener.Bind(localEndPoint);
+            }
+            catch (NullReferenceException)
+            {
+                Console.WriteLine("[FATAL] Config.json is empty or missing parameters !");
+                Console.WriteLine("Press ENTER to exit...");
+                _ = Console.ReadLine();
+                return;
+            }
 
             // Using Listen() method we create the Client list that will want to connect to Server 
             listener.Listen(10);
 
-            Console.WriteLine(string.Format("Server listening on {0}", config.RemoteIp));
+            Console.WriteLine(string.Format("[INFO] Server listening on {0}", config.RemoteIp));
             StartServer();
+
+            Console.WriteLine("Press ENTER to exit...");
+            _ = Console.ReadLine();
         }
         #endregion
 
@@ -60,7 +80,7 @@ namespace RemoteFactorioServer
             while (true)
             {
                 // Each new client
-                Console.WriteLine("Waiting connection ... ");
+                Console.WriteLine("[INFO] Waiting connection ... ");
 
                 // Suspend while waiting for incoming connection Using Accept() method the server will accept connection of client 
                 Socket clientSocket = listener.Accept();
@@ -91,14 +111,14 @@ namespace RemoteFactorioServer
 
                         string data = GetData(clientSocket);
 
-                        Console.WriteLine("Message received -> {0} ", data);
+                        Console.WriteLine("[DEBUG] Message received -> {0} ", data);
 
                         int result = Commands(data);
                         byte[] message = Encoding.ASCII.GetBytes("ERROR<EOF>");
                         if (result >= 0)
                         {
                             message = Encoding.ASCII.GetBytes(result.ToString() + "<EOF>");
-                            Console.WriteLine("Message sent <- {0} ", result.ToString() + "<EOF>");
+                            Console.WriteLine("[DEBUG] Message sent <- {0} ", result.ToString() + "<EOF>");
                         }
                         else if (result == -1)
                         {
@@ -110,7 +130,7 @@ namespace RemoteFactorioServer
                         else if (result == -2)
                         {
                             message = Encoding.ASCII.GetBytes("pong !<EOF>");
-                            Console.WriteLine("Message sent <- {0} ", "pong !<EOF>");
+                            Console.WriteLine("[DEBUG] Message sent <- {0} ", "pong !<EOF>");
                         }
 
                         // Send a message to Client using Send() method 
@@ -169,18 +189,30 @@ namespace RemoteFactorioServer
             else if (message.StartsWith("start"))
             {
                 string parameter = message.Substring(5).Split("<")[0];
+                string servername;
                 Console.WriteLine("\"" + parameter + "\"");
-                if (parameter == "DUT" || string.IsNullOrWhiteSpace(parameter))
+                if (config.Servers.Contains(parameter))
                 {
-                    proc.StartInfo.FileName = @"D:\Program Files(x86)\Steam\steamapps\common\Factorio\bin\x64\servers\factorio - dut.cmd";
+                    servername = parameter;
+                }
+                else if (string.IsNullOrWhiteSpace(parameter)){
+                    servername = "DUT";
                 }
                 else
                 {
-                    return 1; // Return Argument Error
+                    return -3; // Return Argument Error
                 }
+                proc.StartInfo.FileName = string.Format(@"{0}\{1}\{2}",config.ServerFolder,servername,config.ServerStartPoint);
                 proc.StartInfo.CreateNoWindow = false;
-                //proc.Start();
-                //proc.WaitForExit();
+                try
+                {
+                    proc.Start();
+                }
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    return -4; // Return File Error
+                }
+                proc.WaitForExit();
                 Console.WriteLine("STARTED");
                 return 0; // Return everything's fine
             }
