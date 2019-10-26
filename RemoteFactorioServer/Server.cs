@@ -5,34 +5,51 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using IniParser;
+using IniParser.Model;
 
 namespace RemoteFactorioServer
 {
     class Server
     {
+        // TODO : Stop le serv
         // TODO : documente + commente
         // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou même fenêtre)
         // TODO : retire debug
         // TODO : fichier config (users + ip + ports + etc.)
 
         #region Private Fields
-        private static Process proc = new Process();
+        static Process proc = new Process();
         // Establish the local endpoint for the socket. Dns.GetHostName the name of the host running the application. 
-        private static string serverIP = "127.0.0.1";
-        private static readonly IPAddress ipAddr = IPAddress.Parse(serverIP);
-        private static readonly IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 34198);
+        static string serverIP;
+        static int serverPort;
+
+        static FileIniDataParser parser = new FileIniDataParser();
+        static IniData config = new IniData();
 
         // Creation TCP/IP Socket using Socket Class Constructor 
-        private static Socket listener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        static Socket listener;
         #endregion
 
         #region Main Function
         static void Main(string[] args)
         {
-            if (!File.Exists("users.txt"))
+            if (!File.Exists("config.ini"))
             {
-                File.Create("users.txt");
+                File.Create("config.ini");
             }
+            else
+            {
+                config = parser.ReadFile("config.ini");
+            }
+
+            serverIP = config["GENERAL"]["ip"];
+            serverPort = int.Parse(config["GENERAL"]["port"]);
+
+            IPAddress ipAddr = IPAddress.Parse(serverIP);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddr, serverPort);
+
+            listener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             // Using Bind() method we associate a network address to the Server Socket. All client that will connect to this Server Socket must know this network Address 
             listener.Bind(localEndPoint);
@@ -46,12 +63,14 @@ namespace RemoteFactorioServer
         #endregion
 
         #region Private Methods
-        static public void StartServer()
+        static void StartServer()
         {
             while (true)
             {
                 // Each new client
                 Console.WriteLine("Waiting connection ... ");
+
+                Console.WriteLine(config["USERS"]);
 
                 // Suspend while waiting for incoming connection Using Accept() method the server will accept connection of client 
                 Socket clientSocket = listener.Accept();
@@ -79,7 +98,7 @@ namespace RemoteFactorioServer
                     while (isLogged)
                     {
                         // Each command
-                        
+
                         string data = GetData(clientSocket);
 
                         Console.WriteLine("Message received -> {0} ", data);
@@ -114,7 +133,7 @@ namespace RemoteFactorioServer
             }
         }
 
-        static private string GetData(Socket clientSocket)
+        static string GetData(Socket clientSocket)
         {
             byte[] bytes = new Byte[1024];
             string data = null;
@@ -131,7 +150,7 @@ namespace RemoteFactorioServer
             return data;
         }
 
-        static private int LogIn(Socket clientSocket)
+        static int LogIn(Socket clientSocket)
         {
             List<string> usernames = new List<string>();
             List<string> passwords = new List<string>();
@@ -166,7 +185,7 @@ namespace RemoteFactorioServer
             }
         }
 
-        static private int Commands­(string message)
+        static int Commands­(string message)
         {
             if (message == "ping !<EOF>")
             {

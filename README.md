@@ -54,8 +54,6 @@ npm test
 
 ## Auteur
 
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
-
 - [**OxyTom**](https://github.com/oxypomme) - [@OxyTom](https://twitter.com/OxyT0m8)
 
 Lisez la liste des [contributeurs](https://github.com/oxypomme/RemoteFactorioServer/contributors) qui ont participé à ce projet.
