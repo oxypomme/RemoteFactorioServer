@@ -185,6 +185,14 @@ namespace RemoteFactorioServer
                     Console.ResetColor();
                     _ = Client.Command_Exit();
                     break;
+                case 4:
+                    errorMessage = "[" + source + "][ERROR] File Error";
+                    color = ConsoleColor.Red;
+                    break;
+                case 5:
+                    errorMessage = "[SERVER][ERROR] Factorio Server already started or not started";
+                    color = ConsoleColor.Red;
+                    break;
                 default:
                     errorMessage = "[ERROR] Unexpected Error";
                     color = ConsoleColor.Red;

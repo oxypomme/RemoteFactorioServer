@@ -18,8 +18,8 @@ namespace RemoteFactorioServer
         // TODO : gestion erreurs
 
         #region Private Fields
-        static readonly Process proc = new Process(); 
-
+        static readonly Process proc = new Process();
+        static bool isFServerStarted = false;
         static Config config = new Config();
 
         // Creation TCP/IP Socket using Socket Class Constructor 
@@ -46,7 +46,8 @@ namespace RemoteFactorioServer
                 file.Close();
             }
 
-            try { 
+            try
+            {
                 IPAddress ipAddr = IPAddress.Parse(config.RemoteIp);
                 IPEndPoint localEndPoint = new IPEndPoint(ipAddr, config.RemotePort);
                 listener = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -193,41 +194,48 @@ namespace RemoteFactorioServer
                 {
                     servername = parameter;
                 }
-                else if (string.IsNullOrWhiteSpace(parameter)){
+                else if (string.IsNullOrWhiteSpace(parameter))
+                {
                     servername = "DUT";
                 }
                 else
                 {
-                    return -3; // Return Argument Error
+                    return 1; // Return Argument Error
                 }
-                proc.StartInfo.FileName = string.Format(@"{0}\{1}\{2}",config.ServerFolder,servername,config.ServerStartPoint);
+                proc.StartInfo.FileName = string.Format(@"{0}\{1}\{2}", config.ServerFolder, servername, config.ServerStartPoint);
                 proc.StartInfo.CreateNoWindow = false;
-                try
+                if (!isFServerStarted)
                 {
-                    proc.Start();
+                    try
+                    {
+                        proc.Start();
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+                        return 4; // Return File Error
+                    }
                 }
-                catch (System.ComponentModel.Win32Exception)
+                else
                 {
-                    return -4; // Return File Error
+                    return 5; // Return server error
                 }
+                isFServerStarted = true;
                 proc.WaitForExit();
-                Console.WriteLine("STARTED");
                 return 0; // Return everything's fine
             }
             else if (message.StartsWith("stop"))
             {
                 string parameter = message.Substring(4).Split("<")[0];
                 Console.WriteLine("\"" + parameter + "\"");
-                if (parameter == "DUT" || string.IsNullOrWhiteSpace(parameter))
+                if (!isFServerStarted)
                 {
-                    //WIP
-                    Console.WriteLine("STOPPED");
-                    return 0;
+                    proc.Kill();
                 }
                 else
                 {
-                    return 1;
+                    return 5;
                 }
+                return 0;
             }
             else if (message.StartsWith("restart"))
             {
