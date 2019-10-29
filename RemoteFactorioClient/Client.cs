@@ -15,13 +15,13 @@ namespace RemoteFactorioServer
         #endregion
 
         #region Public Constructors 
-        public Client(string ip)
+        public Client(string ip, int port)
         {
             while (true)
             {
                 // Establish the remote endpoint for the socket. Uses port 34198 (factorio+1) on the computer. 
                 IPAddress ipAddr = IPAddress.Parse(ip);
-                IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 34198);
+                IPEndPoint localEndPoint = new IPEndPoint(ipAddr, port);
 
                 // Creation TCP/IP Socket using Socket Class Costructor 
                 sender = new Socket(ipAddr.AddressFamily,

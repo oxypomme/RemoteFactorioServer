@@ -8,6 +8,7 @@ using System.IO;
 
 namespace RemoteFactorioServer
 {
+    // TODO : Generate config file
     // TODO : documente + commente
     // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou même fenêtre)
     // TODO : retire debug
@@ -17,6 +18,7 @@ namespace RemoteFactorioServer
     {
         #region Private Fields
         private static string ip = "127.0.0.1"; //"25.42.5.80" hamachi => 
+        private static int port = 34198;
 
         private static Client Client { get; set; }
         #endregion
@@ -49,7 +51,7 @@ namespace RemoteFactorioServer
 
             Console.WriteLine(string.Format("Client connecting to {0}", ip));
 
-            Client = new Client(ip);
+            Client = new Client(ip, port);
 
             if (LogIn() == 1)
             {
