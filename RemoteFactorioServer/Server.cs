@@ -229,7 +229,14 @@ namespace RemoteFactorioServer
                 Console.WriteLine("\"" + parameter + "\"");
                 if (!isFServerStarted)
                 {
-                    proc.Kill();
+                    try
+                    {
+                        proc.Kill();
+                    }
+                    catch (System.InvalidOperationException)
+                    {
+                        return 5;
+                    }
                 }
                 else
                 {
