@@ -80,6 +80,7 @@ namespace RemoteFactorioServer
             {
                 string command = Console.ReadLine();
                 int result = 2;
+                string source = "CLIENT";
                 if (command == "help")
                 {
                     Help();
@@ -107,7 +108,7 @@ namespace RemoteFactorioServer
                 }
                 else if (command == "exit")
                 {
-                    result = client.Command_Exit();
+                    _ = client.Command_Exit();
                     break;
                 }
                 else if (command == "clear")
@@ -115,7 +116,11 @@ namespace RemoteFactorioServer
                     Console.Clear();
                     result = 0;
                 }
-                Errors(result);
+
+                if (result != 3 || result != 2) {
+                    source = "SERVER";
+                }
+                Errors(result, source);
             }
         }
 
@@ -155,26 +160,26 @@ namespace RemoteFactorioServer
                             + "     Clears the console");
         }
 
-        private static void Errors(int result)
+        private static void Errors(int result, string source)
         {
             ConsoleColor color = ConsoleColor.White;
             string errorMessage;
             switch (result)
             {
                 case 0:
-                    errorMessage = "[INFO] Command executed successfully";
+                    errorMessage = "[" + source + "][INFO] Command executed successfully";
                     color = ConsoleColor.Yellow;
                     break;
                 case 1:
-                    errorMessage = "[ERROR] Unknown Argument";
+                    errorMessage = "[" + source + "][ERROR] Unknown Argument";
                     color = ConsoleColor.Red;
                     break;
                 case 2:
-                    errorMessage = "[ERROR] Unknown Command";
+                    errorMessage = "[" + source + "][ERROR] Unknown Command";
                     color = ConsoleColor.Red;
                     break;
                 case 3:
-                    errorMessage = "[FATAL] Disconnected from server";
+                    errorMessage = "[" + source + "][FATAL] Disconnected from server";
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.WriteLine(errorMessage);
                     Console.ResetColor();

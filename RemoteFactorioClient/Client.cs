@@ -92,7 +92,7 @@ namespace RemoteFactorioServer
             }
             catch (SocketException)
             {
-                return "-1";
+                return "SocketERROR";
             }
 
 
@@ -121,11 +121,7 @@ namespace RemoteFactorioServer
 
             var message = GetData();
             Console.WriteLine("Message from Server -> {0}", message);
-            if (message == "0<EOF>")
-            {
-                return 0;
-            }
-            return 1;
+            return int.Parse(message.Split('<')[0]);
         }
 
         public int Command_Stop(string name)
@@ -143,11 +139,7 @@ namespace RemoteFactorioServer
 
             var message = GetData();
             Console.WriteLine("Message from Server -> {0}", message);
-            if (message == "0<EOF>")
-            {
-                return 0;
-            }
-            return 1;
+            return int.Parse(message.Split('<')[0]);
         }
 
         public int Command_Restart(string name)
