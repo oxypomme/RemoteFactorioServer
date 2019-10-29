@@ -11,7 +11,7 @@ namespace RemoteFactorioServer
     class Client
     {
         #region Private Fields
-        private Socket sender;
+        private readonly Socket sender;
         #endregion
 
         #region Public Constructors 
@@ -46,7 +46,7 @@ namespace RemoteFactorioServer
         private void SendData(string message)
         {
             byte[] messageSent = Encoding.ASCII.GetBytes(message);
-            int byteSent = sender.Send(messageSent);
+            _ = sender.Send(messageSent);
         }
 
         private string GetData()

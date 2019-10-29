@@ -18,11 +18,11 @@ namespace RemoteFactorioServer
         #region Private Fields
         private static string ip = "127.0.0.1"; //"25.42.5.80" hamachi => 
 
-        private static Client client { get; set; }
+        private static Client Client { get; set; }
         #endregion
 
         #region Main Function
-        static void Main(string[] args)
+        static void Main()
         {
             try
             {
@@ -49,19 +49,19 @@ namespace RemoteFactorioServer
 
             Console.WriteLine(string.Format("Client connecting to {0}", ip));
 
-            client = new Client(ip);
+            Client = new Client(ip);
 
             if (LogIn() == 1)
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("[FATAL] Wrong credentials !");
                 Console.ResetColor();
-                client.Stop();
+                Client.Stop();
             }
             else
             {
 
-                Console.WriteLine(client.Command_Ping() + " ms");
+                Console.WriteLine(Client.Command_Ping() + " ms");
 
                 Console.WriteLine("//////////////////\n"
                     + "Type `help` to get list of commands");
@@ -89,26 +89,26 @@ namespace RemoteFactorioServer
                 else if (command.StartsWith("start"))
                 {
                     string parameter = command.Substring(5);
-                    result = client.Command_Start(parameter);
+                    result = Client.Command_Start(parameter);
                 }
                 else if (command.StartsWith("stop"))
                 {
                     string parameter = command.Substring(4);
-                    result = client.Command_Stop(parameter);
+                    result = Client.Command_Stop(parameter);
                 }
                 else if (command.StartsWith("restart"))
                 {
                     string parameter = command.Substring(7);
-                    result = client.Command_Restart(parameter);
+                    result = Client.Command_Restart(parameter);
                 }
                 else if (command.StartsWith("ping"))
                 {
-                    Console.WriteLine(client.Command_Ping() + " ms");
+                    Console.WriteLine(Client.Command_Ping() + " ms");
                     result = 0;
                 }
                 else if (command == "exit")
                 {
-                    _ = client.Command_Exit();
+                    _ = Client.Command_Exit();
                     break;
                 }
                 else if (command == "clear")
@@ -131,7 +131,7 @@ namespace RemoteFactorioServer
             Console.WriteLine("Password : ");
             string password = Console.ReadLine();
 
-            if (client.LogIn(username, password) != 0)
+            if (Client.LogIn(username, password) != 0)
             {
                 return 1;
             }
@@ -183,7 +183,7 @@ namespace RemoteFactorioServer
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.WriteLine(errorMessage);
                     Console.ResetColor();
-                    _ = client.Command_Exit();
+                    _ = Client.Command_Exit();
                     break;
                 default:
                     errorMessage = "[ERROR] Unexpected Error";

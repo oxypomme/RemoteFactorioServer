@@ -18,7 +18,7 @@ namespace RemoteFactorioServer
         // TODO : gestion erreurs
 
         #region Private Fields
-        static Process proc = new Process(); 
+        static readonly Process proc = new Process(); 
 
         static Config config = new Config();
 
@@ -27,25 +27,23 @@ namespace RemoteFactorioServer
         #endregion
 
         #region Main Function
-        static void Main(string[] args)
+        static void Main()
         {
             if (!File.Exists("config.json"))
             {
                 Console.WriteLine("[ERROR] No config.json file found !");
                 Console.WriteLine("[INFO] File created...");
                 Console.WriteLine("[FATAL] Config.json is empty !");
-                File.Create("config.json");
+                _ = File.Create("config.json");
                 Console.WriteLine("Press ENTER to exit...");
                 _ = Console.ReadLine();
                 return;
             }
             else
             {
-                using (StreamReader file = new StreamReader("config.json"))
-                {
-                    config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
-                    file.Close();
-                }
+                using StreamReader file = new StreamReader("config.json");
+                config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
+                file.Close();
             }
 
             try { 
