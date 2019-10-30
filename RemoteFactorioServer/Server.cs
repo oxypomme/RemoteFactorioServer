@@ -37,8 +37,8 @@ namespace RemoteFactorioServer
     ""RemoteIp"":""127.0.0.1"",
     ""RemotePort"": 34198,
     ""Servers"":[],
-    ""ServerFolder"":""D:\\Program Files (x86)\\Steam\\steamapps\\common\\Factorio\\bin\\x64\\servers"",
-    ""ServerStartPoint"":""factorio - server.cmd"",
+    ""ServerFolder"":""D:\\Program Files (x86)\\Steam\\steamapps\\common\\Factorio\\bin\\x64\\servers\\"",
+    ""ServerStartPoint"":""factorio-server.cmd"",
     ""Usernames"":[""admin""],
     ""Passwords"":[""12345""]
 }");
@@ -209,8 +209,9 @@ namespace RemoteFactorioServer
                 {
                     return 1; // Return Argument Error
                 }
-                proc.StartInfo.FileName = string.Format(@"{0}\{1}\{2}", config.ServerFolder, servername, config.ServerStartPoint);
-                proc.StartInfo.CreateNoWindow = false;
+                proc.StartInfo.WorkingDirectory = string.Format("{0}{1}",config.ServerFolder, servername);
+                proc.StartInfo.FileName = string.Format(@"{0}{1}\{2}", config.ServerFolder, servername, config.ServerStartPoint);
+                proc.StartInfo.CreateNoWindow = true;
                 if (!isFServerStarted)
                 {
                     try
@@ -242,6 +243,7 @@ namespace RemoteFactorioServer
                     {
                         return 5;
                     }
+                    isFServerStarted = false;
                 }
                 else
                 {
