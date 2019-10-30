@@ -106,8 +106,10 @@ namespace RemoteFactorioServer
                 else if (command.StartsWith("ping"))
                 {
                     string ping = Client.Command_Ping();
-                    if (ping == "SocketERROR"){
-                        result = 3;
+                    if (ping == "SocketERROR")
+                    {
+                        Errors(3, source);
+                        break;
                     }
                     else
                     {
@@ -126,7 +128,8 @@ namespace RemoteFactorioServer
                     result = 0;
                 }
 
-                if (result != 3 || result != 2) {
+                if (result != 3 || result != 2)
+                {
                     source = "SERVER";
                 }
                 Errors(result, source);
@@ -207,9 +210,12 @@ namespace RemoteFactorioServer
                     color = ConsoleColor.Red;
                     break;
             }
-            Console.ForegroundColor = color;
-            Console.WriteLine(errorMessage);
-            Console.ResetColor();
+            if (result != 3)
+            {
+                Console.ForegroundColor = color;
+                Console.WriteLine(errorMessage);
+                Console.ResetColor();
+            }
 
         }
         #endregion
