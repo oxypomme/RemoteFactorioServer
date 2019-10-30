@@ -43,16 +43,11 @@ namespace RemoteFactorioServer
 }");
                     file.Close();
                 }
-                using (StreamReader file = new StreamReader("config.json"))
-                {
-                    config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
-                    file.Close();
-                }
             }
-            else
+            using (StreamReader file = new StreamReader("config.json"))
             {
-                using StreamReader file = new StreamReader("config.json");
                 config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
+
                 file.Close();
             }
 
@@ -208,7 +203,7 @@ namespace RemoteFactorioServer
                 {
                     return 1; // Return Argument Error
                 }
-                proc.StartInfo.WorkingDirectory = string.Format("{0}{1}",config.ServerFolder, servername);
+                proc.StartInfo.WorkingDirectory = string.Format("{0}{1}", config.ServerFolder, servername);
                 proc.StartInfo.FileName = string.Format(@"{0}{1}\{2}", config.ServerFolder, servername, config.ServerStartPoint);
                 proc.StartInfo.CreateNoWindow = true;
                 if (!isFServerStarted)

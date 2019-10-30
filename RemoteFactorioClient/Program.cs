@@ -34,15 +34,9 @@ namespace RemoteFactorioServer
 }");
                     file.Close();
                 }
-                using (StreamReader file = new StreamReader("config.json"))
-                {
-                    config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
-                    file.Close();
-                }
             }
-            else
+            using (StreamReader file = new StreamReader("config.json"))
             {
-                using StreamReader file = new StreamReader("config.json");
                 config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
                 file.Close();
             }
