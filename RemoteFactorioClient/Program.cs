@@ -10,7 +10,6 @@ namespace RemoteFactorioServer
 {
     // TODO : documente + commente
     // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou même fenêtre)
-    // TODO : retire debug
     // 25.42.5.80 => 25.52.25.118
 
     class Program

@@ -98,7 +98,6 @@ namespace RemoteFactorioServer
 
             // We receive the message using the method Receive(). This method returns number of bytes received, that we'll use to convert them to string 
             var message = GetData();
-            Console.WriteLine("Message from Server -> {0}", message);
             if (message == "pong !<EOF>")
             {
                 return DateTime.Now.Subtract(pingStart).Milliseconds.ToString();
@@ -111,8 +110,6 @@ namespace RemoteFactorioServer
             try
             {
                 SendData("start " + name + "<EOF>");
-
-                Console.WriteLine("Message from Client <- {0}", "start " + name + "<EOF>");
             }
             catch (SocketException)
             {
@@ -120,7 +117,6 @@ namespace RemoteFactorioServer
             }
 
             var message = GetData();
-            Console.WriteLine("Message from Server -> {0}", message);
             return int.Parse(message.Split('<')[0]);
         }
 
@@ -129,8 +125,6 @@ namespace RemoteFactorioServer
             try
             {
                 SendData("stop " + name + "<EOF>");
-
-                Console.WriteLine("Message from Client <- {0}", "stop " + name + "<EOF>");
             }
             catch (SocketException)
             {
@@ -138,7 +132,6 @@ namespace RemoteFactorioServer
             }
 
             var message = GetData();
-            Console.WriteLine("Message from Server -> {0}", message);
             return int.Parse(message.Split('<')[0]);
         }
 
@@ -147,8 +140,6 @@ namespace RemoteFactorioServer
             try
             {
                 SendData("restart " + name + "<EOF>");
-
-                Console.WriteLine("Message from Client <- {0}", "restart " + name + "<EOF>");
             }
             catch (SocketException)
             {
@@ -156,7 +147,6 @@ namespace RemoteFactorioServer
             }
 
             var message = GetData();
-            Console.WriteLine("Message from Server -> {0}", message);
             if (message == "0<EOF>")
             {
                 return 0;
@@ -174,7 +164,6 @@ namespace RemoteFactorioServer
             {
                 return 3;
             }
-            Console.WriteLine("Message from Client <- {0}", "dc<EOF>");
             Stop();
             return 0;
         }
