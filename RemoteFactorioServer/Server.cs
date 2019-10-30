@@ -30,9 +30,8 @@ namespace RemoteFactorioServer
             if (!File.Exists("config.json"))
             {
                 File.Create("config.json").Close();
-                using (StreamWriter file = new StreamWriter("config.json"))
-                {
-                    file.Write(@"{
+                using StreamWriter file = new StreamWriter("config.json");
+                file.Write(@"{
     ""RemoteIp"":""127.0.0.1"",
     ""RemotePort"": 34198,
     ""Servers"":[],
@@ -41,8 +40,7 @@ namespace RemoteFactorioServer
     ""Usernames"":[""admin""],
     ""Passwords"":[""12345""]
 }");
-                    file.Close();
-                }
+                file.Close();
             }
             using (StreamReader file = new StreamReader("config.json"))
             {
