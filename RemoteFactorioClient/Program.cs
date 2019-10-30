@@ -8,24 +8,45 @@ using Newtonsoft.Json;
 
 namespace RemoteFactorioServer
 {
-    // TODO : Generate config file
     // TODO : documente + commente
     // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou même fenêtre)
     // TODO : retire debug
-    // TODO : fichier config (users + ip + ports + etc.)
+    // 25.42.5.80 => 25.52.25.118
 
     class Program
     {
         #region Private Fields
-        private static string ip = "127.0.0.1"; //"25.42.5.80" hamachi => 
-        private static int port = 34198;
-
+        static Config config = new Config();
         private static Client Client { get; set; }
         #endregion
 
         #region Main Function
         static void Main()
         {
+            if (!File.Exists("config.json"))
+            {
+                File.Create("config.json").Close();
+                using (StreamWriter file = new StreamWriter("config.json"))
+                {
+                    file.Write(@"{
+    ""RemoteIp"":""127.0.0.1"",
+    ""RemotePort"": 34198,
+}");
+                    file.Close();
+                }
+                using (StreamReader file = new StreamReader("config.json"))
+                {
+                    config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
+                    file.Close();
+                }
+            }
+            else
+            {
+                using StreamReader file = new StreamReader("config.json");
+                config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
+                file.Close();
+            }
+
             try
             {
                 Start();
@@ -49,9 +70,9 @@ namespace RemoteFactorioServer
         private static void Start()
         {
 
-            Console.WriteLine(string.Format("Client connecting to {0}", ip));
+            Console.WriteLine("Client connecting ...");
 
-            Client = new Client(ip, port);
+            Client = new Client(config.RemoteIp, config.RemotePort);
 
             if (LogIn() == 1)
             {
