@@ -142,12 +142,12 @@ namespace RemoteFactorioServer
 
         private static void Help()
         {
-            Console.WriteLine("start [<name>]\n"
-                            + "     Start the Factorio Server, by default : The DUT one");
-            Console.WriteLine("stop [<name>]\n"
-                            + "     Stop the Factorio Server, by default : The DUT one");
-            Console.WriteLine("restart [<name>]\n"
-                            + "     Restart the Factorio Server, by default : The DUT one");
+            Console.WriteLine("start <name>\n"
+                            + "     Start the Factorio Server");
+            Console.WriteLine("stop\n"
+                            + "     Stop the Factorio Server, need to be started with the remote first");
+            Console.WriteLine("restart\n"
+                            + "     Restart the Factorio Server, need to be started with the remote first");
             Console.WriteLine("activate <name>\n"
                             + "     Activate the mod with the same name");
             Console.WriteLine("deactivate <name>\n"

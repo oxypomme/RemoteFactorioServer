@@ -11,7 +11,6 @@ namespace RemoteFactorioServer
 {
     class Server
     {
-        // TODO : Generate config file
         // TODO : documente + commente
         // TODO : console (check file every x sec and write it console + send it to client) (2e fenêtre ou même fenêtre)
         // TODO : retire debug
@@ -31,13 +30,25 @@ namespace RemoteFactorioServer
         {
             if (!File.Exists("config.json"))
             {
-                Console.WriteLine("[ERROR] No config.json file found !");
-                Console.WriteLine("[INFO] File created...");
-                Console.WriteLine("[FATAL] Config.json is empty !");
-                _ = File.Create("config.json");
-                Console.WriteLine("Press ENTER to exit...");
-                _ = Console.ReadLine();
-                return;
+                File.Create("config.json").Close();
+                using (StreamWriter file = new StreamWriter("config.json"))
+                {
+                    file.Write(@"{
+    ""RemoteIp"":""127.0.0.1"",
+    ""RemotePort"": 34198,
+    ""Servers"":[],
+    ""ServerFolder"":""D:\\Program Files (x86)\\Steam\\steamapps\\common\\Factorio\\bin\\x64\\servers"",
+    ""ServerStartPoint"":""factorio - server.cmd"",
+    ""Usernames"":[""admin""],
+    ""Passwords"":[""12345""]
+}");
+                    file.Close();
+                }
+                using (StreamReader file = new StreamReader("config.json"))
+                {
+                    config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
+                    file.Close();
+                }
             }
             else
             {
@@ -193,10 +204,6 @@ namespace RemoteFactorioServer
                 if (config.Servers.Contains(parameter))
                 {
                     servername = parameter;
-                }
-                else if (string.IsNullOrWhiteSpace(parameter))
-                {
-                    servername = "DUT";
                 }
                 else
                 {
