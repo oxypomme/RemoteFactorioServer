@@ -105,7 +105,11 @@ namespace RemoteFactorioServer
                 }
                 else if (command.StartsWith("ping"))
                 {
-                    Console.WriteLine(Client.Command_Ping() + " ms");
+                    string ping = Client.Command_Ping();
+                    if (ping == "SocketERROR"){
+                        result = 3;
+                    }
+                    Console.WriteLine(ping + " ms");
                     result = 0;
                 }
                 else if (command == "exit")
