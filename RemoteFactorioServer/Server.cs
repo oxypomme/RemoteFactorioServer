@@ -198,7 +198,7 @@ namespace RemoteFactorioServer
             }
             else if (message.StartsWith("start"))
             {
-                string parameter = message.Substring(5).Split("<")[0];
+                string parameter = message.Substring(7).Split("<")[0];
                 string servername;
                 Console.WriteLine("\"" + parameter + "\"");
                 if (config.Servers.Contains(parameter))
@@ -232,8 +232,6 @@ namespace RemoteFactorioServer
             }
             else if (message.StartsWith("stop"))
             {
-                string parameter = message.Substring(4).Split("<")[0];
-                Console.WriteLine("\"" + parameter + "\"");
                 if (!isFServerStarted)
                 {
                     try
